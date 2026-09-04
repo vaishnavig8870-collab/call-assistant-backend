@@ -11,24 +11,27 @@ app.use(express.json());
 const db = process.env.MYSQL_PUBLIC_URL
     ? mysql.createPool(process.env.MYSQL_PUBLIC_URL)
     : null;
-app.post("/bookings", async (req, res) => {
-    try {
-        const { name, phone, service, date, location, request } = req.body;
+const [result] = await db.query(
+    "SELECT COALESCE(MAX(id), 0) + 1 AS nextId FROM bookings"
+);
 
-        const sql = `
-            INSERT INTO bookings
-            (id,name, phone, service, date, location, request)
-            VALUES ((SELECT COALESCE(MAX(id),0)+1 FROM bookings),?, ?, ?, ?, ?, ?)
-        `;
+const nextId = result[0].nextId;
 
-        await db.query(sql, [
-            name,
-            phone,
-            service,
-            date,
-            location,
-            request
-        ]);
+const sql = `
+    INSERT INTO bookings
+    (id, name, phone, service, date, location, request)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+`;
+
+await db.query(sql, [
+    nextId,
+    name,
+    phone,
+    service,
+    date,
+    location,
+    request
+]);
 
         res.json({
             success: true,

@@ -17,8 +17,8 @@ app.post("/bookings", async (req, res) => {
 
         const sql = `
             INSERT INTO bookings
-            (name, phone, service, date, location, request)
-            VALUES (?, ?, ?, ?, ?, ?)
+            (id,name, phone, service, date, location, request)
+            VALUES ((SELECT COALESCE(MAX(id),0)+1 FROM bookings),?, ?, ?, ?, ?, ?)
         `;
 
         await db.query(sql, [

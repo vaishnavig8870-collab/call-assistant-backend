@@ -11,6 +11,39 @@ app.use(express.json());
 const db = process.env.MYSQL_PUBLIC_URL
     ? mysql.createPool(process.env.MYSQL_PUBLIC_URL)
     : null;
+app.post("/bookings", async (req, res) => {
+    try {
+        const { name, phone, service, date, location, request } = req.body;
+
+        const sql = `
+            INSERT INTO bookings
+            (name, phone, service, date, location, request)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `;
+
+        await db.query(sql, [
+            name,
+            phone,
+            service,
+            date,
+            location,
+            request
+        ]);
+
+        res.json({
+            success: true,
+            message: "Booking saved successfully!"
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Booking could not be saved"
+        });
+    }
+});
 // Test MySQL connection
 app.get("/db-test", async (req, res) => {
     try {

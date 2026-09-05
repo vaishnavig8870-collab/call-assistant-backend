@@ -163,7 +163,7 @@ app.post("/user-login", async (req, res) => {
             });
         }
 
-        const token =const token = jwt.sign(
+        const token = jwt.sign(
     {
         id: user.id,
         email: user.email,

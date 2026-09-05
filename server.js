@@ -1,7 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2/promise");
-
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const app = express();
 
 app.use(cors());
@@ -15,7 +16,60 @@ const db = process.env.MYSQL_PUBLIC_URL
     ? mysql.createPool(process.env.MYSQL_PUBLIC_URL)
     : null;
 
+// ===============================
+// ADMIN LOGIN
+// ===============================
 
+app.post("/admin-login", async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        const [admins] = await db.query(
+            "SELECT * FROM admins WHERE username = ?",
+            [username]
+        );
+
+        if (admins.length === 0) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid username or password"
+            });
+        }
+
+        const admin = admins[0];
+
+        const passwordMatch = await bcrypt.compare(
+            password,
+            admin.password
+        );
+
+        if (!passwordMatch) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid username or password"
+            });
+        }
+
+        const token = jwt.sign(
+            { id: admin.id, username: admin.username },
+            process.env.JWT_SECRET,
+            { expiresIn: "2h" }
+        );
+
+        res.json({
+            success: true,
+            token: token
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Login failed"
+        });
+    }
+});
 // ===============================
 // BOOKING
 // ===============================
@@ -73,10 +127,48 @@ app.post("/bookings", async (req, res) => {
 });
 
 // ===============================
+// ADMIN AUTHENTICATION
+// ===============================
+
+function verifyAdminToken(req, res, next) {
+
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized"
+        });
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    try {
+
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET
+        );
+
+        req.admin = decoded;
+        next();
+
+    } catch (error) {
+
+        return res.status(401).json({
+            success: false,
+            message: "Invalid or expired token"
+        });
+    }
+}
+
+
+// ===============================
 // GET ALL BOOKINGS
 // ===============================
 
-app.get("/bookings", async (req, res) => {
+app.get("/bookings", verifyAdminToken, async (req, res) => {
+
     try {
 
         const [bookings] = await db.query(
@@ -98,7 +190,6 @@ app.get("/bookings", async (req, res) => {
         });
     }
 });
-
 // ===============================
 // TEST MYSQL CONNECTION
 // ===============================

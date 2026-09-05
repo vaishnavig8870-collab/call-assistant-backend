@@ -55,6 +55,18 @@
 <body>
 
     <h1>📋 Call Assistant - Admin Dashboard</h1>
+     <button onclick="logout()" style="
+    display: block;
+    margin: 15px auto;
+    padding: 10px 20px;
+    background: #ff6b00;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+">
+    🚪 Logout
+</button>
 
     <div id="message">Loading bookings...</div>
 
@@ -76,6 +88,10 @@
     </table>
 
     <script>
+      function logout() {
+    localStorage.removeItem("adminToken");
+    window.location.href = "admin-login.html";
+}
 
         fetch("https://call-assistant-backend.onrender.com/bookings", {
     headers: {

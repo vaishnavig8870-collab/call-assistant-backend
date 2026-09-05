@@ -72,6 +72,32 @@ app.post("/bookings", async (req, res) => {
     }
 });
 
+// ===============================
+// GET ALL BOOKINGS
+// ===============================
+
+app.get("/bookings", async (req, res) => {
+    try {
+
+        const [bookings] = await db.query(
+            "SELECT * FROM bookings ORDER BY id DESC"
+        );
+
+        res.json({
+            success: true,
+            bookings: bookings
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Could not load bookings"
+        });
+    }
+});
 
 // ===============================
 // TEST MYSQL CONNECTION

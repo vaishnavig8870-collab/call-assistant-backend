@@ -191,6 +191,46 @@ app.get("/bookings", verifyAdminToken, async (req, res) => {
     }
 });
 // ===============================
+// UPDATE BOOKING STATUS
+// ===============================
+
+app.put("/bookings/:id/status", verifyAdminToken, async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+        const { status } = req.body;
+
+        const allowedStatuses = ["Pending", "Accepted", "Completed"];
+
+        if (!allowedStatuses.includes(status)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid status"
+            });
+        }
+
+        await db.query(
+            "UPDATE bookings SET status = ? WHERE id = ?",
+            [status, id]
+        );
+
+        res.json({
+            success: true,
+            message: "Status updated successfully"
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Could not update status"
+        });
+    }
+});
+// ===============================
 // TEST MYSQL CONNECTION
 // ===============================
 

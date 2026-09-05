@@ -231,6 +231,36 @@ app.put("/bookings/:id/status", verifyAdminToken, async (req, res) => {
     }
 });
 // ===============================
+// DELETE BOOKING
+// ===============================
+
+app.delete("/bookings/:id", verifyAdminToken, async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        await db.query(
+            "DELETE FROM bookings WHERE id = ?",
+            [id]
+        );
+
+        res.json({
+            success: true,
+            message: "Booking deleted successfully"
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Could not delete booking"
+        });
+    }
+});
+// ===============================
 // TEST MYSQL CONNECTION
 // ===============================
 

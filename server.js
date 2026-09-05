@@ -71,6 +71,126 @@ app.post("/admin-login", async (req, res) => {
     }
 });
 // ===============================
+// USER REGISTRATION
+// ===============================
+
+app.post("/register", async (req, res) => {
+
+    try {
+
+        const { name, email, password,phone } = req.body;
+
+        if (!name || !email || !password ||!phone) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required"
+            });
+        }
+
+        const [existingUsers] = await db.query(
+            "SELECT * FROM users WHERE email = ?",
+            [email]
+        );
+
+        if (existingUsers.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Email already registered"
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const [result] = await db.query(
+    "SELECT COALESCE(MAX(id), 0) + 1 AS nextId FROM users"
+);
+
+const nextId = result[0].nextId;
+
+await db.query(
+    "INSERT INTO users (id, name, email, password, phone) VALUES (?, ?, ?, ?, ?)",
+    [nextId, name, email, hashedPassword, phone]
+);
+
+        res.json({
+            success: true,
+            message: "Registration successful"
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Registration failed"
+        });
+    }
+}); 
+// ===============================
+// USER LOGIN
+// ===============================
+
+app.post("/user-login", async (req, res) => {
+
+    try {
+
+        const { email, password } = req.body;
+
+        const [users] = await db.query(
+            "SELECT * FROM users WHERE email = ?",
+            [email]
+        );
+
+        if (users.length === 0) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid email or password"
+            });
+        }
+
+        const user = users[0];
+
+        const passwordMatch = await bcrypt.compare(
+            password,
+            user.password
+        );
+
+        if (!passwordMatch) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid email or password"
+            });
+        }
+
+        const token =const token = jwt.sign(
+    {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        phone: user.phone
+    },
+            process.env.JWT_SECRET,
+            { expiresIn: "2h" }
+        );
+
+        res.json({
+            success: true,
+            token: token,
+            name: user.name
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Login failed"
+        });
+    }
+});
+// ===============================
 // BOOKING
 // ===============================
 
@@ -161,8 +281,70 @@ function verifyAdminToken(req, res, next) {
         });
     }
 }
+// ===============================
+// USER AUTHENTICATION
+// ===============================
 
+function verifyUserToken(req, res, next) {
 
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized"
+        });
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    try {
+
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET
+        );
+
+        req.user = decoded;
+        next();
+
+    } catch (error) {
+
+        return res.status(401).json({
+            success: false,
+            message: "Invalid or expired token"
+        });
+
+    }
+}
+// ===============================
+// USER BOOKINGS
+// ===============================
+
+app.get("/user-bookings", verifyUserToken, async (req, res) => {
+
+    try {
+
+        const [bookings] = await db.query(
+            "SELECT * FROM bookings WHERE phone = ? ORDER BY id DESC",
+            [req.user.phone]
+        );
+
+        res.json({
+            success: true,
+            bookings: bookings
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Could not load bookings"
+        });
+    }
+});
 // ===============================
 // GET ALL BOOKINGS
 // ===============================

@@ -69,6 +69,21 @@
 </button>
 
     <div id="message">Loading bookings...</div>
+<input
+    type="text"
+    id="searchBooking"
+    placeholder="🔎 Search by name, phone, service or location"
+    style="
+        width: 90%;
+        max-width: 500px;
+        padding: 12px;
+        margin: 15px auto;
+        display: block;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 16px;
+    "
+>
 
     <table id="bookingTable">
         <thead>
@@ -138,6 +153,26 @@
                     "Error connecting to server.";
 
             });
+const searchBox = document.getElementById("searchBooking");
+
+searchBox.addEventListener("input", function () {
+
+    const searchText = searchBox.value.toLowerCase();
+    const rows = document.querySelectorAll("#bookingBody tr");
+
+    rows.forEach(row => {
+
+        const rowText = row.innerText.toLowerCase();
+
+        if (rowText.includes(searchText)) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+
+    });
+
+});
 
     </script>
 

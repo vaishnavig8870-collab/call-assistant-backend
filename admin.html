@@ -105,6 +105,29 @@
         </tbody>
     </table>
 </div>
+<h2 style="text-align:center; margin-top:40px;">
+    👥 Registered Users
+</h2>
+
+<div id="userMessage" style="text-align:center;">
+    Loading users...
+</div>
+
+<div style="overflow-x:auto;">
+    <table id="userTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+            </tr>
+        </thead>
+
+        <tbody id="userBody">
+        </tbody>
+    </table>
+</div>
     <script>
       function logout() {
     localStorage.removeItem("adminToken");

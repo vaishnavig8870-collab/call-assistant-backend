@@ -9,7 +9,50 @@
 <html>
 <head>
     <title>Call Assistant - Admin Dashboard</title>
+    <div id="stats" style="
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin: 25px 0;
+">
 
+    <div class="stat-card">
+        📋<br>
+        <strong id="totalBookings">0</strong>
+        <br>
+        Total Bookings
+    </div>
+
+    <div class="stat-card">
+        👥<br>
+        <strong id="totalUsers">0</strong>
+        <br>
+        Total Users
+    </div>
+
+    <div class="stat-card">
+        🟡<br>
+        <strong id="pendingBookings">0</strong>
+        <br>
+        Pending
+    </div>
+
+    <div class="stat-card">
+        🟢<br>
+        <strong id="acceptedBookings">0</strong>
+        <br>
+        Accepted
+    </div>
+
+    <div class="stat-card">
+        🔵<br>
+        <strong id="completedBookings">0</strong>
+        <br>
+        Completed
+    </div>
+
+</div>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -49,6 +92,20 @@
             margin-top: 20px;
             font-size: 18px;
         }
+      .stat-card {
+    width: 150px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.stat-card strong {
+    font-size: 28px;
+    color: #ff6b00;
+}
     </style>
 </head>
 
@@ -108,6 +165,21 @@
 <h2 style="text-align:center; margin-top:40px;">
     👥 Registered Users
 </h2>
+<input
+    type="text"
+    id="searchUsers"
+    placeholder="🔎 Search users by name, email or phone"
+    style="
+        width: 90%;
+        max-width: 500px;
+        padding: 12px;
+        margin: 15px auto;
+        display: block;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 16px;
+    "
+>
 
 <div id="userMessage" style="text-align:center;">
     Loading users...
@@ -341,6 +413,94 @@ fetch("https://call-assistant-backend.onrender.com/users", {
         "Error connecting to server.";
 
 });
+// SEARCH REGISTERED USERS
+
+const userSearchBox = document.getElementById("searchUsers");
+
+userSearchBox.addEventListener("input", function () {
+
+    const searchText = userSearchBox.value.toLowerCase();
+
+    const rows = document.querySelectorAll("#userBody tr");
+
+    rows.forEach(row => {
+
+        const rowText = row.innerText.toLowerCase();
+
+        if (rowText.includes(searchText)) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+
+    });
+
+});
+// UPDATE DASHBOARD STATISTICS
+
+async function loadStatistics() {
+
+    const token = localStorage.getItem("adminToken");
+
+    try {
+
+        // Get bookings
+        const bookingResponse = await fetch(
+            "https://call-assistant-backend.onrender.com/bookings",
+            {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }
+        );
+
+        const bookingData = await bookingResponse.json();
+
+        if (bookingData.success) {
+
+            const bookings = bookingData.bookings;
+
+            document.getElementById("totalBookings").innerText =
+                bookings.length;
+
+            document.getElementById("pendingBookings").innerText =
+                bookings.filter(b => b.status === "Pending").length;
+
+            document.getElementById("acceptedBookings").innerText =
+                bookings.filter(b => b.status === "Accepted").length;
+
+            document.getElementById("completedBookings").innerText =
+                bookings.filter(b => b.status === "Completed").length;
+        }
+
+
+        // Get users
+        const userResponse = await fetch(
+            "https://call-assistant-backend.onrender.com/users",
+            {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }
+        );
+
+        const userData = await userResponse.json();
+
+        if (userData.success) {
+
+            document.getElementById("totalUsers").innerText =
+                userData.users.length;
+
+        }
+
+    } catch (error) {
+
+        console.error("Statistics error:", error);
+
+    }
+}
+
+loadStatistics();
     </script>
 
 </body>

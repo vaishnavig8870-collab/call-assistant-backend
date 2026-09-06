@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <script>
     const adminToken = localStorage.getItem("adminToken");
 
@@ -6,54 +7,15 @@
         window.location.href = "admin-login.html";
     }
 </script>
+
 <html>
+
 <head>
+
     <title>Call Assistant - Admin Dashboard</title>
-    <div id="stats" style="
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    margin: 25px 0;
-">
 
-    <div class="stat-card">
-        📋<br>
-        <strong id="totalBookings">0</strong>
-        <br>
-        Total Bookings
-    </div>
-
-    <div class="stat-card">
-        👥<br>
-        <strong id="totalUsers">0</strong>
-        <br>
-        Total Users
-    </div>
-
-    <div class="stat-card">
-        🟡<br>
-        <strong id="pendingBookings">0</strong>
-        <br>
-        Pending
-    </div>
-
-    <div class="stat-card">
-        🟢<br>
-        <strong id="acceptedBookings">0</strong>
-        <br>
-        Accepted
-    </div>
-
-    <div class="stat-card">
-        🔵<br>
-        <strong id="completedBookings">0</strong>
-        <br>
-        Completed
-    </div>
-
-</div>
     <style>
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -63,16 +25,22 @@
 
         h1 {
             text-align: center;
+            color: #333;
+        }
+
+        h2 {
+            color: #333;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             background: white;
-            margin-top: 25px;
+            margin-top: 20px;
         }
 
-        th, td {
+        th,
+        td {
             border: 1px solid #ddd;
             padding: 12px;
             text-align: left;
@@ -87,421 +55,1003 @@
             background: #f9f9f9;
         }
 
-        #message {
+        #message,
+        #userMessage {
             text-align: center;
             margin-top: 20px;
             font-size: 18px;
         }
-      .stat-card {
-    width: 150px;
-    padding: 20px;
-    background: white;
-    border-radius: 12px;
-    text-align: center;
-    font-size: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-}
 
-.stat-card strong {
-    font-size: 28px;
-    color: #ff6b00;
+        /* STATISTICS */
+
+        #stats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .stat-card {
+            width: 150px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+
+        .stat-card strong {
+            font-size: 28px;
+            color: #ff6b00;
+        }
+
+        /* BUTTONS */
+
+        .main-button {
+            display: block;
+            margin: 15px auto;
+            padding: 11px 22px;
+            background: #ff6b00;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .main-button:hover {
+            background: #e85d00;
+        }
+
+        /* SEARCH */
+
+        .search-box {
+            width: 90%;
+            max-width: 500px;
+            padding: 12px;
+            margin: 15px auto;
+            display: block;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        /* NEW BOOKING FORM */
+
+        #newBookingBox {
+            display: none;
+            max-width: 600px;
+            margin: 25px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        #newBookingBox h2 {
+            text-align: center;
+            color: #ff6b00;
+        }
+
+        .booking-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        .booking-textarea {
+            width: 100%;
+            box-sizing: border-box;
+            height: 90px;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+            resize: vertical;
+        }
+
+        .form-buttons {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .save-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 11px 20px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+        }
+
+        .cancel-button {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 11px 20px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 700px) {
+
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    #stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .stat-card {
+        width: auto;
+        padding: 15px 8px;
+        font-size: 13px;
+    }
+
+    .stat-card strong {
+        font-size: 24px;
+    }
+
+    .main-button {
+        width: 90%;
+        font-size: 15px;
+    }
+
+    .search-box {
+        width: 90%;
+        font-size: 14px;
+    }
+
+    #newBookingBox {
+        width: auto;
+        margin: 20px 5px;
+        padding: 18px;
+    }
+
+    .booking-input,
+    .booking-textarea {
+        font-size: 14px;
+    }
+
+    table {
+        min-width: 900px;
+    }
+
+    th,
+    td {
+        padding: 8px;
+        font-size: 13px;
+    }
+
+    .save-button,
+    .cancel-button {
+        width: 90%;
+        margin: 5px auto;
+    }
+
 }
     </style>
+
 </head>
+
 
 <body>
 
     <h1>📋 Call Assistant - Admin Dashboard</h1>
-     <button onclick="logout()" style="
-    display: block;
-    margin: 15px auto;
-    padding: 10px 20px;
-    background: #ff6b00;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-">
-    🚪 Logout
-</button>
 
-    <div id="message">Loading bookings...</div>
-<input
-    type="text"
-    id="searchBooking"
-    placeholder="🔎 Search by name, phone, service or location"
-    style="
-        width: 90%;
-        max-width: 500px;
-        padding: 12px;
-        margin: 15px auto;
-        display: block;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 16px;
-    "
->
-     <div
-     style="overflow-x:auto;">
-    <table id="bookingTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Service</th>
-                <th>Date</th>
-                <th>Location</th>
-                <th>Request</th>
-                <th>status</th>
-                <th>Action</th>
-           </tr>
-        </thead>
 
-        <tbody id="bookingBody">
-        </tbody>
-    </table>
-</div>
-<h2 style="text-align:center; margin-top:40px;">
-    👥 Registered Users
-</h2>
-<input
-    type="text"
-    id="searchUsers"
-    placeholder="🔎 Search users by name, email or phone"
-    style="
-        width: 90%;
-        max-width: 500px;
-        padding: 12px;
-        margin: 15px auto;
-        display: block;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 16px;
-    "
->
+    <!-- STATISTICS -->
 
-<div id="userMessage" style="text-align:center;">
-    Loading users...
-</div>
+    <div id="stats">
 
-<div style="overflow-x:auto;">
-    <table id="userTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-            </tr>
-        </thead>
+        <div class="stat-card">
+            📋
+            <br>
+            <strong id="totalBookings">0</strong>
+            <br>
+            Total Bookings
+        </div>
 
-        <tbody id="userBody">
-        </tbody>
-    </table>
-</div>
-    <script>
-      function logout() {
+        <div class="stat-card">
+            👥
+            <br>
+            <strong id="totalUsers">0</strong>
+            <br>
+            Total Users
+        </div>
+
+        <div class="stat-card">
+            🟡
+            <br>
+            <strong id="pendingBookings">0</strong>
+            <br>
+            Pending
+        </div>
+
+        <div class="stat-card">
+            🟢
+            <br>
+            <strong id="acceptedBookings">0</strong>
+            <br>
+            Accepted
+        </div>
+
+        <div class="stat-card">
+            🔵
+            <br>
+            <strong id="completedBookings">0</strong>
+            <br>
+            Completed
+        </div>
+
+    </div>
+
+
+    <!-- BUTTONS -->
+
+    <button class="main-button" onclick="showNewBooking()">
+        ➕ New Booking
+    </button>
+
+    <button class="main-button" onclick="logout()">
+        🚪 Logout
+    </button>
+
+
+    <!-- NEW BOOKING FORM -->
+
+    <div id="newBookingBox">
+
+        <h2>➕ Create New Booking</h2>
+
+        <form id="newBookingForm">
+
+            <input
+                type="text"
+                id="newName"
+                class="booking-input"
+                placeholder="Customer Name"
+                required
+            >
+
+            <input
+                type="tel"
+                id="newPhone"
+                class="booking-input"
+                placeholder="Phone Number"
+                required
+            >
+
+            <select
+                id="newService"
+                class="booking-input"
+                required
+            >
+                <option value="">Select Service</option>
+                <option value="Shopping Assistance">
+                    Shopping Assistance
+                </option>
+                <option value="Pick Up & Drop">
+                    Pick Up & Drop
+                </option>
+                <option value="Home Assistance">
+                    Home Assistance
+                </option>
+                <option value="Personal Tasks">
+                    Personal Tasks
+                </option>
+            </select>
+
+            <input
+                type="date"
+                id="newDate"
+                class="booking-input"
+                required
+            >
+
+            <input
+                type="text"
+                id="newLocation"
+                class="booking-input"
+                placeholder="Location"
+                required
+            >
+
+            <textarea
+                id="newRequest"
+                class="booking-textarea"
+                placeholder="Customer Request"
+            ></textarea>
+
+            <div class="form-buttons">
+
+                <button
+                    type="submit"
+                    class="save-button"
+                >
+                    💾 Save Booking
+                </button>
+
+                <button
+                    type="button"
+                    class="cancel-button"
+                    onclick="hideNewBooking()"
+                >
+                    ❌ Cancel
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- BOOKINGS -->
+
+    <div id="message">
+        Loading bookings...
+    </div>
+
+
+    <input
+        type="text"
+        id="searchBooking"
+        class="search-box"
+        placeholder="🔎 Search by name, phone, service or location"
+    >
+
+
+    <div style="overflow-x:auto;">
+
+        <table id="bookingTable">
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Service</th>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Request</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="bookingBody">
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- REGISTERED USERS -->
+
+    <h2 style="text-align:center; margin-top:40px;">
+        👥 Registered Users
+    </h2>
+
+
+    <input
+        type="text"
+        id="searchUsers"
+        class="search-box"
+        placeholder="🔎 Search users by name, email or phone"
+    >
+
+
+    <div id="userMessage">
+        Loading users...
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table id="userTable">
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="userBody">
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+<script>
+
+
+/* LOGOUT */
+
+function logout() {
+
     localStorage.removeItem("adminToken");
+
     window.location.href = "admin-login.html";
+
 }
 
-        fetch("https://call-assistant-backend.onrender.com/bookings", {
-    headers: {
-        "Authorization": "Bearer " + localStorage.getItem("adminToken")
-    }
-})
-            .then(response => response.json())
-            .then(data => {
 
-                const tableBody = document.getElementById("bookingBody");
-                const message = document.getElementById("message");
+/* SHOW NEW BOOKING */
 
-                if (data.success) {
+function showNewBooking() {
 
-                    message.innerText = "";
+    document.getElementById("newBookingBox").style.display = "block";
 
-                    data.bookings.forEach(booking => {
-
-                        const row = document.createElement("tr");
-
-                        row.innerHTML = `
-                            <td>${booking.id}</td>
-                            <td>${booking.name}</td>
-                            <td>${booking.phone}</td>
-                            <td>${booking.service}</td>
-                            <td>${booking.date}</td>
-                            <td>${booking.location}</td>
-                            <td>${booking.request}</td>
-                            <td>
-    <select onchange="updateStatus(${booking.id}, this.value)">
-
-        <option value="Pending" ${booking.status === "Pending" ? "selected" : ""}>🟡 Pending</option>
-        <option value="Accepted" ${booking.status === "Accepted" ? "selected" : ""}>🟢 Accepted</option>
-        <option value="Completed" ${booking.status === "Completed" ? "selected" : ""}>🔵 Completed</option>
-
-    </select>
-</td>
-<td>
-    <button onclick="deleteBooking(${booking.id})"
-        style="
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 7px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        ">
-        🗑️ Delete
-    </button>
-</td>
-                        `;
-
-                        tableBody.appendChild(row);
-                    });
-
-                } else {
-                    message.innerText = "Unable to load bookings.";
-                }
-
-            })
-            .catch(error => {
-
-                console.error(error);
-
-                document.getElementById("message").innerText =
-                    "Error connecting to server.";
-
-            });
-const searchBox = document.getElementById("searchBooking");
-
-searchBox.addEventListener("input", function () {
-
-    const searchText = searchBox.value.toLowerCase();
-    const rows = document.querySelectorAll("#bookingBody tr");
-
-    rows.forEach(row => {
-
-        const rowText = row.innerText.toLowerCase();
-
-        if (rowText.includes(searchText)) {
-            row.style.display = "";
-        } else {
-            row.style.display = "none";
-        }
-
+    document.getElementById("newBookingBox").scrollIntoView({
+        behavior: "smooth"
     });
 
-});
-async function updateStatus(id, status) {
+}
 
-    const token = localStorage.getItem("adminToken");
+
+/* HIDE NEW BOOKING */
+
+function hideNewBooking() {
+
+    document.getElementById("newBookingBox").style.display = "none";
+
+}
+
+
+/* CREATE NEW BOOKING */
+
+document.getElementById("newBookingForm").addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        const name =
+            document.getElementById("newName").value;
+
+        const phone =
+            document.getElementById("newPhone").value;
+
+        const service =
+            document.getElementById("newService").value;
+
+        const date =
+            document.getElementById("newDate").value;
+
+        const location =
+            document.getElementById("newLocation").value;
+
+        const request =
+            document.getElementById("newRequest").value;
+
+
+        try {
+
+            const response = await fetch(
+                "https://call-assistant-backend.onrender.com/bookings",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        name: name,
+                        phone: phone,
+                        service: service,
+                        date: date,
+                        location: location,
+                        request: request
+                    })
+                }
+            );
+
+
+            const data = await response.json();
+
+
+            if (data.success) {
+
+                alert("✅ New booking created successfully!");
+
+                document
+                    .getElementById("newBookingForm")
+                    .reset();
+
+                hideNewBooking();
+
+                loadBookings();
+
+                loadStatistics();
+
+            } else {
+
+                alert(
+                    data.message ||
+                    "Booking could not be created."
+                );
+
+            }
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "❌ Could not connect to server."
+            );
+
+        }
+
+    }
+);
+
+
+/* LOAD BOOKINGS */
+
+async function loadBookings() {
 
     try {
 
         const response = await fetch(
-            "https://call-assistant-backend.onrender.com/bookings/" + id + "/status",
+            "https://call-assistant-backend.onrender.com/bookings",
             {
-                method: "PUT",
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + token
-                },
-                body: JSON.stringify({
-                    status: status
-                })
+                    "Authorization":
+                        "Bearer " +
+                        localStorage.getItem("adminToken")
+                }
             }
         );
 
+
         const data = await response.json();
 
-        if (!data.success) {
-            alert("Status update failed.");
+
+        const tableBody =
+            document.getElementById("bookingBody");
+
+        const message =
+            document.getElementById("message");
+
+
+        tableBody.innerHTML = "";
+
+
+        if (data.success) {
+
+            message.innerText = "";
+
+
+            data.bookings.forEach(booking => {
+
+                const row =
+                    document.createElement("tr");
+
+
+                const currentStatus =
+                    booking.status || "Pending";
+
+
+                row.innerHTML = `
+
+                    <td>${booking.id}</td>
+
+                    <td>${booking.name}</td>
+
+                    <td>${booking.phone}</td>
+
+                    <td>${booking.service}</td>
+
+                    <td>${booking.date}</td>
+
+                    <td>${booking.location}</td>
+
+                    <td>${booking.request || ""}</td>
+
+                    <td>
+
+                        <select
+                            onchange="updateStatus(
+                                ${booking.id},
+                                this.value
+                            )"
+                        >
+
+                            <option
+                                value="Pending"
+                                ${currentStatus === "Pending" ? "selected" : ""}
+                            >
+                                🟡 Pending
+                            </option>
+
+                            <option
+                                value="Accepted"
+                                ${currentStatus === "Accepted" ? "selected" : ""}
+                            >
+                                🟢 Accepted
+                            </option>
+
+                            <option
+                                value="Completed"
+                                ${currentStatus === "Completed" ? "selected" : ""}
+                            >
+                                🔵 Completed
+                            </option>
+
+                        </select>
+
+                    </td>
+
+                    <td>
+
+                        <button
+                            onclick="deleteBooking(${booking.id})"
+                            style="
+                                background:#dc3545;
+                                color:white;
+                                border:none;
+                                padding:7px 10px;
+                                border-radius:5px;
+                                cursor:pointer;
+                            "
+                        >
+                            🗑️ Delete
+                        </button>
+
+                    </td>
+
+                `;
+
+
+                tableBody.appendChild(row);
+
+            });
+
+
+        } else {
+
+            message.innerText =
+                "Unable to load bookings.";
+
         }
+
 
     } catch (error) {
 
         console.error(error);
+
+        document.getElementById("message").innerText =
+            "Error connecting to server.";
+
+    }
+
+}
+
+
+/* BOOKING SEARCH */
+
+document
+    .getElementById("searchBooking")
+    .addEventListener("input", function() {
+
+        const searchText =
+            this.value.toLowerCase();
+
+        const rows =
+            document.querySelectorAll(
+                "#bookingBody tr"
+            );
+
+
+        rows.forEach(row => {
+
+            const rowText =
+                row.innerText.toLowerCase();
+
+            row.style.display =
+                rowText.includes(searchText)
+                    ? ""
+                    : "none";
+
+        });
+
+    });
+
+
+/* UPDATE STATUS */
+
+async function updateStatus(id, status) {
+
+    const token =
+        localStorage.getItem("adminToken");
+
+
+    try {
+
+        const response = await fetch(
+
+            "https://call-assistant-backend.onrender.com/bookings/"
+            + id
+            + "/status",
+
+            {
+                method: "PUT",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization":
+                        "Bearer " + token
+                },
+
+                body: JSON.stringify({
+                    status: status
+                })
+
+            }
+
+        );
+
+
+        const data =
+            await response.json();
+
+
+        if (data.success) {
+
+            loadStatistics();
+
+        } else {
+
+            alert("Status update failed.");
+
+        }
+
+
+    } catch (error) {
+
+        console.error(error);
+
         alert("Status update failed.");
 
     }
+
 }
+
+
+/* DELETE BOOKING */
 
 async function deleteBooking(id) {
 
-    const confirmDelete = confirm(
-        "Are you sure you want to delete this booking?"
-    );
+    const confirmDelete =
+        confirm(
+            "Are you sure you want to delete this booking?"
+        );
+
 
     if (!confirmDelete) {
         return;
     }
 
-    const token = localStorage.getItem("adminToken");
+
+    const token =
+        localStorage.getItem("adminToken");
+
 
     try {
 
         const response = await fetch(
-            "https://call-assistant-backend.onrender.com/bookings/" + id,
+
+            "https://call-assistant-backend.onrender.com/bookings/"
+            + id,
+
             {
                 method: "DELETE",
+
                 headers: {
-                    "Authorization": "Bearer " + token
+                    "Authorization":
+                        "Bearer " + token
                 }
             }
+
         );
 
-        const data = await response.json();
+
+        const data =
+            await response.json();
+
 
         if (data.success) {
-            alert("Booking deleted successfully!");
-            location.reload();
+
+            alert(
+                "✅ Booking deleted successfully!"
+            );
+
+            loadBookings();
+
+            loadStatistics();
+
         } else {
+
             alert("Delete failed.");
+
         }
+
 
     } catch (error) {
 
         console.error(error);
+
         alert("Delete failed.");
 
     }
+
 }
-// LOAD REGISTERED USERS
 
-fetch("https://call-assistant-backend.onrender.com/users", {
-    headers: {
-        "Authorization": "Bearer " + localStorage.getItem("adminToken")
-    }
-})
-.then(response => response.json())
-.then(data => {
 
-    const userBody = document.getElementById("userBody");
-    const userMessage = document.getElementById("userMessage");
+/* LOAD REGISTERED USERS */
 
-    if (data.success) {
-
-        userMessage.innerText = "";
-
-        data.users.forEach(user => {
-
-            const row = document.createElement("tr");
-
-            row.innerHTML = `
-                <td>${user.id}</td>
-                <td>${user.name}</td>
-                <td>${user.email}</td>
-                <td>${user.phone}</td>
-            `;
-
-            userBody.appendChild(row);
-        });
-
-    } else {
-
-        userMessage.innerText = "Unable to load users.";
-
-    }
-
-})
-.catch(error => {
-
-    console.error(error);
-
-    document.getElementById("userMessage").innerText =
-        "Error connecting to server.";
-
-});
-// SEARCH REGISTERED USERS
-
-const userSearchBox = document.getElementById("searchUsers");
-
-userSearchBox.addEventListener("input", function () {
-
-    const searchText = userSearchBox.value.toLowerCase();
-
-    const rows = document.querySelectorAll("#userBody tr");
-
-    rows.forEach(row => {
-
-        const rowText = row.innerText.toLowerCase();
-
-        if (rowText.includes(searchText)) {
-            row.style.display = "";
-        } else {
-            row.style.display = "none";
-        }
-
-    });
-
-});
-// UPDATE DASHBOARD STATISTICS
-
-async function loadStatistics() {
-
-    const token = localStorage.getItem("adminToken");
+async function loadUsers() {
 
     try {
 
-        // Get bookings
-        const bookingResponse = await fetch(
-            "https://call-assistant-backend.onrender.com/bookings",
-            {
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
-            }
-        );
-
-        const bookingData = await bookingResponse.json();
-
-        if (bookingData.success) {
-
-            const bookings = bookingData.bookings;
-
-            document.getElementById("totalBookings").innerText =
-                bookings.length;
-
-            document.getElementById("pendingBookings").innerText =
-                bookings.filter(b => b.status === "Pending").length;
-
-            document.getElementById("acceptedBookings").innerText =
-                bookings.filter(b => b.status === "Accepted").length;
-
-            document.getElementById("completedBookings").innerText =
-                bookings.filter(b => b.status === "Completed").length;
-        }
-
-
-        // Get users
-        const userResponse = await fetch(
+        const response = await fetch(
             "https://call-assistant-backend.onrender.com/users",
             {
                 headers: {
-                    "Authorization": "Bearer " + token
+                    "Authorization":
+                        "Bearer " +
+                        localStorage.getItem("adminToken")
                 }
             }
         );
 
-        const userData = await userResponse.json();
 
-        if (userData.success) {
+        const data =
+            await response.json();
 
-            document.getElementById("totalUsers").innerText =
-                userData.users.length;
+
+        const userBody =
+            document.getElementById("userBody");
+
+        const userMessage =
+            document.getElementById("userMessage");
+
+
+        userBody.innerHTML = "";
+
+
+        if (data.success) {
+
+            userMessage.innerText = "";
+
+
+            data.users.forEach(user => {
+
+                const row =
+                    document.createElement("tr");
+
+
+                row.innerHTML = `
+
+                    <td>${user.id}</td>
+
+                    <td>${user.name}</td>
+
+                    <td>${user.email}</td>
+
+                    <td>${user.phone}</td>
+
+                `;
+
+
+                userBody.appendChild(row);
+
+            });
+
+
+        } else {
+
+            userMessage.innerText =
+                "Unable to load users.";
 
         }
 
+
     } catch (error) {
 
-        console.error("Statistics error:", error);
+        console.error(error);
+
+        document.getElementById("userMessage").innerText =
+            "Error connecting to server.";
 
     }
+
 }
 
-loadStatistics();
-    </script>
 
-</body>
-</html>
+/* USER SEARCH */
+
+document
+    .getElementById("searchUsers")
+    .addEventListener("input", function() {
+
+        const searchText =
+            this.value.toLowerCase();
+
+        const rows =
+            document.querySelectorAll(
+                "#userBody tr"
+            );
+
+
+        rows.forEach(row => {
+
+            const rowText =
+                row.innerText.toLowerCase();
+
+            row.style.display =
+                rowText.includes(searchText)
+                    ? ""
+                    : "none";
+
+        });
+
+    });
+
+
+/* STATISTICS */
+
+async function loadStatistics() {
+
+    const token =
+        localStorage.getItem("adminToken");
+
+
+    try {
+
+        const bookingResponse =
+            await fetch(
+                "https://call-assistant-backend.onrender.com/bookings",
+                {
+                    headers: {
+                        "Authorization":
+                            "Bearer " + token

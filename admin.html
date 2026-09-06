@@ -295,6 +295,52 @@ async function deleteBooking(id) {
 
     }
 }
+// LOAD REGISTERED USERS
+
+fetch("https://call-assistant-backend.onrender.com/users", {
+    headers: {
+        "Authorization": "Bearer " + localStorage.getItem("adminToken")
+    }
+})
+.then(response => response.json())
+.then(data => {
+
+    const userBody = document.getElementById("userBody");
+    const userMessage = document.getElementById("userMessage");
+
+    if (data.success) {
+
+        userMessage.innerText = "";
+
+        data.users.forEach(user => {
+
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${user.id}</td>
+                <td>${user.name}</td>
+                <td>${user.email}</td>
+                <td>${user.phone}</td>
+            `;
+
+            userBody.appendChild(row);
+        });
+
+    } else {
+
+        userMessage.innerText = "Unable to load users.";
+
+    }
+
+})
+.catch(error => {
+
+    console.error(error);
+
+    document.getElementById("userMessage").innerText =
+        "Error connecting to server.";
+
+});
     </script>
 
 </body>

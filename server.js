@@ -479,7 +479,28 @@ app.get("/", (req, res) => {
     res.send("Call Assistant Backend is Running!");
 });
 
+// GET ALL REGISTERED USERS - ADMIN
+app.get("/users", verifyAdminToken, async (req, res) => {
+    try {
+        const [users] = await db.query(
+            "SELECT id, name, email, phone FROM users ORDER BY id DESC"
+        );
 
+        res.json({
+            success: true,
+            users: users
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Could not load users"
+        });
+    }
+});
 // ===============================
 // START SERVER
 // ===============================
